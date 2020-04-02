@@ -23,6 +23,12 @@ config.h
 #define THUMBWHEEL_INPUT3    28
 #define THUMBWHEEL_INPUT4    30
 #define THUMBWHEEL_INPUT5    32
-#define THUMBWHEEL_INPUT6    3```
+#define THUMBWHEEL_INPUT6    3
+```
 
 Here you can configure which pins to be used by for the guitar input reading, and for the switch that selects the instrument.
+
+# Software Flowchart
+
+
+
