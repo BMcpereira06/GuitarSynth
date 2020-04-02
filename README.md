@@ -8,8 +8,8 @@ Outputs:
   - Midi
  
 # HW Requirements
-  [Music Shield](https://www.sparkfun.com/tutorials/302)
-  Arduino Uno;
+   - [Music Shield](https://www.sparkfun.com/tutorials/302)
+   - Arduino Uno
   
 # Schematics
 
