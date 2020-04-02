@@ -29,6 +29,6 @@ config.h
 Here you can configure which pins to be used by for the guitar input reading, and for the switch that selects the instrument.
 
 # Software Flowchart
-![flowchart](mages/Flow_chart.png)
+![flowchart](images/Flow_chart.png)
 
 
