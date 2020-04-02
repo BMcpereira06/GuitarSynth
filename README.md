@@ -2,7 +2,7 @@
 
 Inputs:
   - Guitar Signal
-  - Thumbwheel Switch
+  - Thumbwheel Switch (or similar)
  
 Outputs: 
   - Midi
@@ -14,6 +14,7 @@ Outputs:
 # Schematics
 
 # Configuration
+config.h
 ```cpp
 #define ANALOGUE_PORT        A0
 #define THUMBWHEEL_INPUT0    22
@@ -22,5 +23,6 @@ Outputs:
 #define THUMBWHEEL_INPUT3    28
 #define THUMBWHEEL_INPUT4    30
 #define THUMBWHEEL_INPUT5    32
-#define THUMBWHEEL_INPUT6    34
-´´´
+#define THUMBWHEEL_INPUT6    3```
+
+Here you can configure which pins to be used by for the guitar input reading, and for the switch that selects the instrument.
