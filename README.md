@@ -12,6 +12,7 @@ Outputs:
    - Arduino Uno
   
 # Schematics
+![sch](images/Schematic.png)
 
 # Configuration
 config.h
