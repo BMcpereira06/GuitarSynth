@@ -2,7 +2,6 @@
 #include "config.h"
 #include "frequencyToNote.h"
 #include "pitchToNote.h"
-#include "Frequency.h"
 #include <SoftwareSerial.h>
  
  
