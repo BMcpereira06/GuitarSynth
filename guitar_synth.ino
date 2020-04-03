@@ -17,7 +17,7 @@ unsigned int humanTime;
 
 byte newData = 0;
 byte prevData = 0;
-
+byte resetMIDI = 4;
 //freq variables
 unsigned int timer = 0;//counts period of wave
 unsigned int period;
@@ -36,8 +36,12 @@ void setup()
     pinMode(pins[i], INPUT);
   }
 
-
-  Serial.println("Setup completed");
+  pinMode(resetMIDI, OUTPUT);
+  digitalWrite(resetMIDI, LOW);
+  delay(100);
+  digitalWrite(resetMIDI, HIGH);
+  delay(100);
+  talkMIDI(0xB0, 0x07, 120); 
 }
 
 
