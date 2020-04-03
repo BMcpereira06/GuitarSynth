@@ -3,8 +3,8 @@
 #include "frequencyToNote.h"
 #include "pitchToNote.h"
 #include <SoftwareSerial.h>
- 
- 
+
+
 int notesArray[DEPTH];                        // Array to store detected notes and find the "correct" note which occurred the most often
 int occurrences[DEPTH];                       // Array in which the number of occurrences for each note are stored
 bool marked[DEPTH];                           // Array to indicate which of the notes have been checked
@@ -17,7 +17,7 @@ unsigned int humanTime;
 
 byte newData = 0;
 byte prevData = 0;
-byte resetMIDI = 4;
+
 //freq variables
 unsigned int timer = 0;//counts period of wave
 unsigned int period;
@@ -30,20 +30,29 @@ void setup()
   mySerial.begin(31250);
   Serial.begin(9600);
   freq_setup();
+
   // Hw configuration
   for (int i = 0; i < 7; i++)
   {
     pinMode(pins[i], INPUT);
   }
 
-  pinMode(resetMIDI, OUTPUT);
-  digitalWrite(resetMIDI, LOW);
-  delay(100);
-  digitalWrite(resetMIDI, HIGH);
-  delay(100);
-  talkMIDI(0xB0, 0x07, 120); 
+  midi_setup();
+
 }
 
+void midi_setup()
+{
+  pinMode(RESET_MIDI, OUTPUT);
+  digitalWrite(RESET_MIDI, LOW);
+  delay(100);
+  digitalWrite(RESET_MIDI, HIGH);
+  delay(100);
+  talkMIDI(0xB0, 0x07, 120);
+  delay(100);
+  talkMIDI(0xB0, 0, 0x00); //Default bank GM1
+  delay(100);
+}
 
 void freq_setup()
 {
@@ -67,17 +76,17 @@ void freq_setup()
   sei();//enable interrupts
 }
 
-ISR(ADC_vect) {//when new ADC value ready
-
+ISR(ADC_vect) 
+{
+  //when new ADC value ready
   prevData = newData;//store previous value
   newData = ADCH;//get value from A0
-  if (prevData < 127 && newData >= 127)
+  if (prevData < 512 && newData >= 512)
   { //if increasing and crossing midpoint
     period = timer;//get period
     timer = 0;//reset timer
   }
-
-  timer++;//increment timer at rate of 38.5kHz
+  timer++; //increment timer at rate of 38.5kHz
 }
 
 float get_frequency()
@@ -87,20 +96,24 @@ float get_frequency()
 
 void loop()
 {
+  test_shield_playing();
   float frequency = get_frequency();
   Serial.print("Frequency: ");
-  Serial.println(frequency,2);
+  Serial.println(frequency, 2);
   int instrument = get_instrument();
   set_instrument(instrument);
   Serial.print("Intrument: ");
   Serial.print(instrument);
-  process_freq(frequency, instrument);
+  //process_freq(frequency, instrument);
+  play_midi(frequency);
 }
 
 void set_instrument(int instrument)
 {
+  delay(250);
   Serial.println("Changing instrument");
   talkMIDI(0xC0, instrument, 0);
+  delay(250);
 }
 
 int get_instrument()
@@ -119,6 +132,62 @@ int get_instrument()
     }
   }
   return ( selector );
+}
+
+void play_midi(float frequency)
+{
+  if (frequency > 0)
+  {
+    int note_to_play = get_note(frequency);
+    if (note_to_play != previousNote)
+    {
+       noteOff(0, previousNote, INTENSITY);
+       noteOn(0, note_to_play, INTENSITY);
+       previousNote = note_to_play;
+    }
+       
+  }
+  else
+  {
+    noteOff(0, previousNote, INTENSITY);
+  }
+}
+int get_note(float frequency)
+{
+    int noteIndex = searchForNote(frequency); // Find the index of the corresponding frequency
+    return notePitch[noteIndex];
+}
+
+void test_shield_playing()
+{
+  Serial.println("Basic Instruments");
+  talkMIDI(0xB0, 0, 0x00); //Default bank GM1
+   int instrument;
+   int note;
+  //Change to different instrument
+  for (instrument = 0 ; instrument < 127 ; instrument++) {
+
+    Serial.print(" Instrument: ");
+    Serial.println(instrument, DEC);
+
+    talkMIDI(0xC0, instrument, 0); //Set instrument number. 0xC0 is a 1 data byte command
+
+    //Play notes from F#-0 (30) to F#-5 (90):
+    for (note = 30 ; note < 40 ; note++) {
+      Serial.print("N:");
+      Serial.println(note, DEC);
+
+      //Note on channel 1 (0x90), some note value (note), middle velocity (0x45):
+      noteOn(0, note, 60);
+      delay(50);
+
+      //Turn off the note with a given off/release velocity
+      noteOff(0, note, 60);
+      delay(50);
+    }
+
+    delay(100); //Delay between instruments
+  }
 }
 
 void process_freq(float frequency, int instrument)

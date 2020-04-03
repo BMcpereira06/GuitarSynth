@@ -14,6 +14,7 @@
 #define THUMBWHEEL_INPUT4    9
 #define THUMBWHEEL_INPUT5    10
 #define THUMBWHEEL_INPUT6    11
+#define RESET_MIDI            4
 
 
 const int pins[7] = {THUMBWHEEL_INPUT0, THUMBWHEEL_INPUT1, THUMBWHEEL_INPUT2, THUMBWHEEL_INPUT3, THUMBWHEEL_INPUT4, THUMBWHEEL_INPUT5, THUMBWHEEL_INPUT6};
@@ -23,3 +24,4 @@ void noteOn(byte channel, byte note, byte attack_velocity);
 void noteOff(byte channel, byte note, byte release_velocity);
 int get_instrument();
 void set_instrument(int instrument);
+void midi_setup();
