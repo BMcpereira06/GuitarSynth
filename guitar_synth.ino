@@ -52,6 +52,7 @@ void midi_setup()
   delay(100);
   talkMIDI(0xB0, 0, 0x00); //Default bank GM1
   delay(100);
+  test_shield_playing();
 }
 
 void freq_setup()
@@ -96,7 +97,7 @@ float get_frequency()
 
 void loop()
 {
-  test_shield_playing();
+  
   float frequency = get_frequency();
   Serial.print("Frequency: ");
   Serial.println(frequency, 2);
