@@ -76,7 +76,7 @@ ISR(ADC_vect) {//when new ADC value ready
   timer++;//increment timer at rate of 38.5kHz
 }
 
-int get_frequency()
+float get_frequency()
 {
   return frequency = 38462 / period;
 }
